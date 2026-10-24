@@ -1,0 +1,117 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Henrik Brix Andersen <henrik@brixandersen.dk>
+# SPDX-License-Identifier: Apache-2.0
+
+mainmenu "i2c-tiny-usb bridge"
+
+menu "i2c-tiny-usb bridge"
+
+module = APP
+module-str = i2c-tiny-usb bridge
+source "subsys/logging/Kconfig.template.log_config"
+
+config APP_BOOT_BANNER
+	bool "Boot banner"
+	default y if BOOT_BANNER
+	select PRINTK
+	help
+	  Print the firmware version during boot up.
+
+config APP_USBD_MANUFACTURER
+	string "USB device manufacturer string"
+	default "zephyr-i2c-tiny-usb-bridge"
+
+config APP_USBD_PRODUCT
+	string "USB device product string"
+	default "i2c-tiny-usb bridge"
+
+config APP_USBD_VID
+	hex "USB vendor ID"
+	default 0x1209
+	help
+	  Defaults to the pid.codes test IDs 0x1209:0x0001, which are only
+	  meant for testing and private use. Set your own IDs before
+	  distributing a device: open source projects can get a product ID
+	  under the vendor ID 0x1209 from pid.codes. The udev rules in the
+	  repository bind the Linux i2c-tiny-usb driver to the IDs.
+
+config APP_USBD_PID
+	hex "USB product ID"
+	default 0x0001
+
+config APP_USBD_SELF_POWERED
+	bool "USB device is self-powered"
+
+config APP_USBD_MAX_POWER
+	int "USB device maximum power"
+	default 50
+	range 0 250
+	help
+	  Maximum current draw from the bus in milliampere (mA) divided by 2.
+	  A value of 50 results in a maximum current draw value of 100 mA.
+
+config APP_USBD_WINUSB
+	bool "Microsoft OS 2.0 descriptors for WinUSB"
+	default y
+	help
+	  Report Microsoft OS 2.0 descriptors, so that Windows 8.1 and newer
+	  install the WinUSB driver automatically. libusb based tools can then
+	  access the device without a driver installation.
+
+config APP_USBD_WINUSB_VENDOR_CODE
+	hex "Microsoft OS 2.0 descriptor vendor code"
+	default 0x20
+	range 0x08 0xff
+	depends on APP_USBD_WINUSB
+	help
+	  bRequest of the vendor request that reads the Microsoft OS 2.0
+	  descriptor set. It must not collide with the i2c-tiny-usb commands
+	  0 to 7.
+
+menuconfig APP_DFU
+	bool "USB Device Firmware Upgrade (DFU) support"
+	default y
+	depends on BOOTLOADER_MCUBOOT
+	depends on $(dt_nodelabel_enabled,slot1_partition)
+	select FLASH
+	select FLASH_MAP
+	select STREAM_FLASH
+	select IMG_MANAGER
+	select IMG_ERASE_PROGRESSIVELY
+	select USBD_DFU
+	select USBD_DFU_FLASH
+	select REBOOT
+	help
+	  Add a DFU runtime interface. dfu-util switches the device into DFU
+	  mode, downloads a signed image into the slot-1 partition, and the
+	  device reboots into MCUboot, which swaps the images.
+
+if APP_DFU
+
+configdefault USBD_DFU_FLASH_SLOT0
+	default n
+
+configdefault USBD_DFU_FLASH_SLOT1
+	default y
+
+config APP_USBD_DFU_VID
+	hex "USB vendor ID in DFU mode"
+	default APP_USBD_VID
+
+config APP_USBD_DFU_PID
+	hex "USB product ID in DFU mode"
+	default APP_USBD_PID
+
+config APP_DFU_REBOOT_DELAY
+	int "Reboot delay"
+	default 100
+	range 0 60000
+	help
+	  Delay in milliseconds between the completion of a DFU download and
+	  the reboot into MCUboot.
+
+endif # APP_DFU
+
+endmenu
+
+source "Kconfig.zephyr"

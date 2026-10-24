@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-License-Identifier: Apache-2.0
+
+manifest:
+  self:
+    path: zephyr-i2c-tiny-usb-bridge
+
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+
+  projects:
+    - name: zephyr
+      remote: zephyrproject-rtos
+      revision: 2a9e8ac155a3f2fd85d4559753be86a47b44ccf0
+      import:
+        name-allowlist:
+          - cmsis_6
+          - hal_adi
+          - hal_ambiq
+          - hal_atmel
+          - hal_bouffalolab
+          - hal_espressif
+          - hal_microchip
+          - hal_nordic
+          - hal_nuvoton
+          - hal_nxp
+          - hal_renesas
+          - hal_rpi_pico
+          - hal_stm32
+          - mbedtls
+          - mcuboot
+          - segger
+          - tf-psa-crypto

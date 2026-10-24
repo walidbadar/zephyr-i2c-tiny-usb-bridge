@@ -1,0 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * I2C1 on PB6 (SCL) and PB7 (SDA), shared with the on-board LSM303
+ * accelerometer (0x19) and magnetometer (0x1e). The board enumerates through
+ * the USB USER connector.
+ */
+/ {
+	i2c-tiny-usb {
+		compatible = "i2c-tiny-usb";
+		i2c-bus = <&i2c1>;
+	};
+};

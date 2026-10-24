@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-License-Identifier: Apache-2.0
+
+name: i2c-tiny-usb
+build:
+  cmake: .
+  kconfig: Kconfig
+  settings:
+    dts_root: .

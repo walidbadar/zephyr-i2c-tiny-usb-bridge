@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-License-Identifier: Apache-2.0
+#
+# REUSE annotations for files that cannot carry (or do not have) an inline
+# SPDX header. See https://reuse.software/spec/ for details.
+
+version = 1
+
+[[annotations]]
+path = [
+    ".gitignore",
+    "app/prj.conf",
+    "app/boards/*.conf",
+    "tests/subsys/usb/i2c_tiny_usb/boards/*.conf",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Muhammad Waleed Badar"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "doc/requirements.txt"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright (c) 2024-2026 Henrik Brix Andersen <henrik@brixandersen.dk>"
+SPDX-License-Identifier = "Apache-2.0"

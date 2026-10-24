@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-License-Identifier: Apache-2.0
+
+config USBD_I2C_TINY_USB_CLASS
+	bool "USB i2c-tiny-usb class"
+	depends on USB_DEVICE_STACK_NEXT
+	depends on I2C
+	depends on DT_HAS_I2C_TINY_USB_ENABLED
+	select USBD_VREQ_SUPPORT
+	default y
+	help
+	  USB device class compatible with the i2c-tiny-usb adapter. It bridges
+	  the I2C controller of the i2c-tiny-usb devicetree node to the Linux
+	  i2c-tiny-usb driver.
+
+# Selecting LED would create a dependency loop through LED drivers that
+# select I2C, so the activity LED gets a default instead
+configdefault LED
+	default y if $(dt_compat_enabled,i2c-tiny-usb) && \
+		     ($(dt_compat_any_has_prop,i2c-tiny-usb,activity-led) || \
+		      $(dt_alias_enabled,led0))
+
+if USBD_I2C_TINY_USB_CLASS
+
+config USBD_I2C_TINY_USB_LED
+	bool "Activity LED"
+	default y
+	depends on LED
+	depends on $(dt_compat_any_has_prop,i2c-tiny-usb,activity-led) || \
+		   $(dt_alias_enabled,led0)
+	help
+	  Drive the activity-led of the i2c-tiny-usb devicetree node, or the
+	  led0 alias. The LED is on while the host has configured the device
+	  and goes off briefly for each I2C transaction.
+
+config USBD_I2C_TINY_USB_LED_BLINK_MS
+	int "Activity LED off time"
+	default 20
+	range 1 1000
+	depends on USBD_I2C_TINY_USB_LED
+	help
+	  Time in milliseconds the LED stays off after an I2C transaction.
+
+module = USBD_I2C_TINY_USB
+module-str = usbd i2c-tiny-usb
+source "subsys/logging/Kconfig.template.log_config"
+
+endif

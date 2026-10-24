@@ -1,0 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/* Bridge the I2C bus of the Arduino header, on any board that labels it */
+/ {
+	i2c-tiny-usb {
+		compatible = "i2c-tiny-usb";
+		i2c-bus = <&arduino_i2c>;
+	};
+};

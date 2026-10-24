@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Henrik Brix Andersen <henrik@brixandersen.dk>
+# SPDX-License-Identifier: Apache-2.0
+
+sample:
+  description: i2c-tiny-usb compatible USB to I2C bridge firmware
+  name: i2c-tiny-usb bridge
+common:
+  tags:
+    - i2c
+    - usb
+  depends_on:
+    - usbd
+tests:
+  app.i2c_tiny_usb:
+    platform_allow:
+      - stm32f3_disco
+    integration_platforms:
+      - stm32f3_disco
+  app.i2c_tiny_usb.debug:
+    platform_allow:
+      - stm32f3_disco
+    integration_platforms:
+      - stm32f3_disco
+    extra_args:
+      - FILE_SUFFIX=debug
+    harness: console
+    harness_config:
+      type: one_line
+      regex:
+        - "i2c-tiny-usb bridge ready"
+  app.i2c_tiny_usb.arduino:
+    filter: dt_nodelabel_enabled("arduino_i2c") and dt_nodelabel_enabled("zephyr_udc0")
+    platform_allow:
+      - frdm_k64f
+      - nrf52840dk/nrf52840
+      - nucleo_f413zh
+    integration_platforms:
+      - frdm_k64f
+      - nrf52840dk/nrf52840
+      - nucleo_f413zh
+    extra_args:
+      - EXTRA_DTC_OVERLAY_FILE=overlays/arduino_i2c.overlay
+  app.i2c_tiny_usb.dfu:
+    sysbuild: true
+    platform_allow:
+      - stm32f3_disco
+    integration_platforms:
+      - stm32f3_disco
+  app.i2c_tiny_usb.hil:
+    # Runs on a bridge attached to the host running twister
+    platform_allow:
+      - stm32f3_disco
+    extra_args:
+      - FILE_SUFFIX=debug
+    harness: pytest
+    harness_config:
+      fixture: i2c_tiny_usb_host
+      pytest_root:
+        - "pytest/test_bridge.py"
+      pytest_args:
+        # LSM303DLHC magnetometer identification registers, revision B
+        - "--target=0x1e:0x0a:0x48"
+        - "--target=0x1e:0x0b:0x34"
+        - "--target=0x1e:0x0c:0x33"
+        - "--absent=0x10"
