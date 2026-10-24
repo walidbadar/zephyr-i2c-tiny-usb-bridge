@@ -46,6 +46,7 @@ jobs:
           west build -p -b stm32_debug_probe -d build/stm32_debug_probe app
           west build -p -b stm32_debug_probe -d build/stm32_debug_probe_debug app -- \
             -DFILE_SUFFIX=debug
+          west build -p -b stm32_debug_probe -d build/stm32_debug_probe_dfu --sysbuild app
 
       - name: Run tests
         working-directory: zephyr-i2c-tiny-usb-bridge

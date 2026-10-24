@@ -218,7 +218,9 @@ The firmware supports USB [Device Firmware Upgrade](https://docs.zephyrproject.o
 (DFU) via the [MCUboot](https://www.trustedfirmware.org/projects/mcuboot/)
 bootloader. This is intended for use with boards without an on-board
 programmer. The board needs `slot0_partition` and `slot1_partition` flash
-partitions.
+partitions. Boards whose devicetree has none can define them in their board
+overlay, as [app/boards/stm32_debug_probe.overlay](app/boards/stm32_debug_probe.overlay)
+does: MCUboot then uses the same flash layout.
 
 To build the firmware with MCUboot integration for USB DFU use
 [sysbuild](https://docs.zephyrproject.org/latest/build/sysbuild/index.html):
@@ -242,7 +244,13 @@ MCUboot reverts to the previous image on the next reset.
 
 MCUboot signs images with its development key by default. Set
 `SB_CONFIG_BOOT_SIGNATURE_KEY_FILE` to your own key before distributing
-devices.
+devices. On the `stm32_debug_probe`, MCUboot with signature checking does not
+fit into the 128 KiB of flash next to two image slots: images are only
+verified against their SHA-256 hash, so anyone with USB access can install
+firmware.
+
+The [udev rules](70-i2c-tiny-usb.rules) give the logged-in user access to the
+USB device, so `dfu-util` works without `sudo`.
 
 ## Usage
 

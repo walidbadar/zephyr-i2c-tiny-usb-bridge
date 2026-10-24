@@ -17,6 +17,7 @@
 	chosen {
 		/delete-property/ zephyr,console;
 		/delete-property/ zephyr,shell-uart;
+		zephyr,code-partition = &slot0_partition;
 	};
 
 	i2c-tiny-usb {
@@ -31,6 +32,37 @@
 		sda-gpios = <&gpioa 4 GPIO_OPEN_DRAIN>;
 		#address-cells = <1>;
 		#size-cells = <0>;
+	};
+};
+
+/*
+ * MCUboot flash layout for USB DFU. MCUboot without image signature checking
+ * fits in 26 KiB. The secondary slot is one 1 KiB page larger than the
+ * primary slot, as required by MCUboot's swap using offset mode.
+ */
+&flash0 {
+	partitions {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		boot_partition: partition@0 {
+			compatible = "zephyr,mapped-partition";
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(26)>;
+		};
+
+		slot0_partition: partition@6800 {
+			compatible = "zephyr,mapped-partition";
+			label = "image-0";
+			reg = <0x00006800 DT_SIZE_K(50)>;
+		};
+
+		slot1_partition: partition@13000 {
+			compatible = "zephyr,mapped-partition";
+			label = "image-1";
+			reg = <0x00013000 DT_SIZE_K(51)>;
+		};
 	};
 };
 

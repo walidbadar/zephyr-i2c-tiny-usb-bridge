@@ -5,7 +5,8 @@
 # These udev rules load i2c-tiny-usb and i2c-dev when the bridge is plugged
 # in, bind the i2c-tiny-usb driver to the USB IDs of the bridge, which it
 # does not know, and give the logged-in user and the
-# plugdev group access to the /dev/i2c-N bus.
+# plugdev group access to the /dev/i2c-N bus and, for dfu-util, to the USB
+# device.
 #
 # 1. Copy this file to /etc/udev/rules.d/70-i2c-tiny-usb.rules. The number
 #    must stay below 73, where systemd applies the uaccess tag.
@@ -24,6 +25,9 @@ ACTION!="add", GOTO="i2c_tiny_usb_rules_end"
 # follows when the module is already loaded, unless the driver has it already.
 SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="1209", ATTR{idProduct}=="0001", \
   RUN+="/bin/sh -c '/sbin/modprobe -ab i2c-tiny-usb i2c-dev && cd /sys/bus/usb/drivers/i2c-tiny-usb && { grep -qx \"1209 0001 ff\" new_id || echo 1209 0001 ff > new_id; }'"
+
+# User access to the USB device, for dfu-util, in runtime and in DFU mode
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="1209", ATTR{idProduct}=="0001", MODE="0660", GROUP="plugdev", TAG+="uaccess"
 
 SUBSYSTEM=="i2c-dev", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="0001", MODE="0660", GROUP="plugdev", TAG+="uaccess"
 

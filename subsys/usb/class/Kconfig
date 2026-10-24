@@ -16,7 +16,7 @@ config USBD_I2C_TINY_USB_CLASS
 # Selecting LED would create a dependency loop through LED drivers that
 # select I2C, so the activity LED gets a default instead
 configdefault LED
-	default y if $(dt_compat_enabled,i2c-tiny-usb) && \
+	default y if USB_DEVICE_STACK_NEXT && $(dt_compat_enabled,i2c-tiny-usb) && \
 		     ($(dt_compat_any_has_prop,i2c-tiny-usb,activity-led) || \
 		      $(dt_alias_enabled,led0))
 

@@ -98,7 +98,9 @@ USB Device Firmware Upgrade (DFU) Mode
 
 The firmware supports USB :external+zephyr:ref:`Device Firmware Upgrade <dfu>` (DFU) via the
 `MCUboot`_ bootloader. This is intended for use with boards without an on-board programmer. The
-board needs ``slot0_partition`` and ``slot1_partition`` flash partitions.
+board needs ``slot0_partition`` and ``slot1_partition`` flash partitions. Boards whose devicetree has
+none can define them in their board overlay, as ``app/boards/stm32_debug_probe.overlay`` does:
+MCUboot then uses the same flash layout.
 
 To build the firmware with MCUboot integration for USB DFU use :external+zephyr:ref:`sysbuild
 <sysbuild>` when building for your board (here ``stm32f3_disco``):
@@ -122,7 +124,12 @@ firmware confirms itself once its USB device support is up, otherwise MCUboot re
 previous image on the next reset.
 
 MCUboot signs images with its development key by default. Set ``SB_CONFIG_BOOT_SIGNATURE_KEY_FILE``
-to your own key before distributing devices.
+to your own key before distributing devices. On the ``stm32_debug_probe``, MCUboot with signature
+checking does not fit into the 128 KiB of flash next to two image slots: images are only verified
+against their SHA-256 hash, so anyone with USB access can install firmware.
+
+The udev rules give the logged-in user access to the USB device, so ``dfu-util`` works without
+``sudo``.
 
 .. _MCUboot:
    https://www.trustedfirmware.org/projects/mcuboot/

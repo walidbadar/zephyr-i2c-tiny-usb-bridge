@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Henrik Brix Andersen <henrik@brixandersen.dk>
+# SPDX-License-Identifier: Apache-2.0
+
+# MCUboot with signature checking does not fit next to two image slots in the
+# 128 KiB flash and 20 KiB RAM of the STM32F103. Images are still verified
+# against their SHA-256 hash.
+choice BOOT_SIGNATURE_TYPE
+	default BOOT_SIGNATURE_TYPE_NONE if BOARD = "stm32_debug_probe"
+endchoice
+
+source "share/sysbuild/Kconfig"
