@@ -19,10 +19,10 @@ Install them with:
 
    sudo cp 70-i2c-tiny-usb.rules /etc/udev/rules.d/
    sudo udevadm control --reload-rules
-   sudo udevadm trigger
 
-The rules file must keep a number below 73, where systemd applies the ``uaccess`` tag. The bus can
-then be used without ``sudo``:
+Then plug in the adapter, or unplug and replug it if it is already connected: the driver is bound
+on plug-in only. The rules file must keep a number below 73, where systemd applies the ``uaccess``
+tag. The bus can then be used without ``sudo``:
 
 .. code-block:: console
 

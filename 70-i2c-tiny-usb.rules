@@ -11,19 +11,21 @@
 # 1. Copy this file to /etc/udev/rules.d/70-i2c-tiny-usb.rules. The number
 #    must stay below 73, where systemd applies the uaccess tag.
 #
-# 2. Activate the new rules by running the following commands:
+# 2. Activate the new rules by running the following command, then plug in
+#    the bridge, or unplug and replug it if it is already connected:
 #    sudo udevadm control --reload-rules
-#    sudo udevadm trigger
 #
 # Replace 1209 and 0001 with the CONFIG_APP_USBD_VID and CONFIG_APP_USBD_PID
 # values when using custom USB IDs.
 
-ACTION!="add", GOTO="i2c_tiny_usb_rules_end"
+# The access rules also run on change events, so that a udevadm trigger
+# applies them to a bridge that is already connected
+ACTION=="remove", GOTO="i2c_tiny_usb_rules_end"
 
 # Load the drivers and bind i2c-tiny-usb to the vendor specific interface
 # (class ff), not the DFU one. The ID is added on plug-in, as no driver event
 # follows when the module is already loaded, unless the driver has it already.
-SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="1209", ATTR{idProduct}=="0001", \
+ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="1209", ATTR{idProduct}=="0001", \
   RUN+="/bin/sh -c '/sbin/modprobe -ab i2c-tiny-usb i2c-dev && cd /sys/bus/usb/drivers/i2c-tiny-usb && { grep -qx \"1209 0001 ff\" new_id || echo 1209 0001 ff > new_id; }'"
 
 # User access to the USB device, for dfu-util, in runtime and in DFU mode

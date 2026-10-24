@@ -265,10 +265,10 @@ bus. Install them with:
 ```shell
 sudo cp 70-i2c-tiny-usb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
-sudo udevadm trigger
 ```
 
-The bus can then be used without `sudo`:
+Then plug in the adapter, or unplug and replug it if it is already connected:
+the driver is bound on plug-in only. The bus can then be used without `sudo`:
 
 ```shell
 i2cdetect -l | grep i2c-tiny-usb
