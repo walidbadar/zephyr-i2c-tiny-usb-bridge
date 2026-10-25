@@ -159,27 +159,6 @@ west update zephyr
 [west.yml](west.yml). Run `west update` without arguments to also fetch the
 HALs and modules listed there.
 
-### As a Zephyr Module
-
-The firmware repository is a [Zephyr module](https://docs.zephyrproject.org/latest/develop/modules.html),
-which allows for adding it to an existing Zephyr workspace, either for building
-the firmware as part of an existing workspace, or for reuse of the
-i2c-tiny-usb USB device class outside of the firmware application.
-
-To pull it in as a Zephyr module, either add it as a West project in the
-`west.yml` file or pull it in by adding a submanifest (e.g.
-`zephyr/submanifests/i2c-tiny-usb.yaml`) file with the following content and
-run `west update`:
-
-```yaml
-manifest:
-  projects:
-    - name: zephyr-i2c-tiny-usb-bridge
-      url: https://github.com/walidbadar/zephyr-i2c-tiny-usb-bridge.git
-      revision: main
-      path: custom/zephyr-i2c-tiny-usb-bridge # adjust the path as needed
-```
-
 ### Building and Running
 
 After setting up a workspace, build the firmware for your board using `west`,
@@ -346,6 +325,27 @@ Linux host, through `i2c-dev` and sysfs:
 ```shell
 cd zephyr-i2c-tiny-usb-bridge/app
 pytest pytest/test_bridge.py --target=<addr>:<reg>:<value> --absent=<addr>
+```
+
+### As a Zephyr Module
+
+The firmware repository is a [Zephyr module](https://docs.zephyrproject.org/latest/develop/modules.html),
+which allows for adding it to an existing Zephyr workspace, either for building
+the firmware as part of an existing workspace, or for reuse of the
+i2c-tiny-usb USB device class outside of the firmware application.
+
+To pull it in as a Zephyr module, either add it as a West project in the
+`west.yml` file or pull it in by adding a submanifest (e.g.
+`zephyr/submanifests/i2c-tiny-usb.yaml`) file with the following content and
+run `west update`:
+
+```yaml
+manifest:
+  projects:
+    - name: zephyr-i2c-tiny-usb-bridge
+      url: https://github.com/walidbadar/zephyr-i2c-tiny-usb-bridge.git
+      revision: main
+      path: custom/zephyr-i2c-tiny-usb-bridge # adjust the path as needed
 ```
 
 ## License
