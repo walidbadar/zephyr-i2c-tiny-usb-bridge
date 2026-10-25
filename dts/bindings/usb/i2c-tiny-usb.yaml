@@ -2,18 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 description: |
-  i2c-tiny-usb compatible USB to I2C bridge
+  USB to I2C bridge
 
   Bridges an I2C controller to the host through the USB i2c-tiny-usb class.
-  Only one instance is supported. Example:
-
-    / {
-            i2c_tiny_usb0: i2c-tiny-usb {
-                    compatible = "i2c-tiny-usb";
-                    i2c-bus = <&i2c1>;
-                    activity-led = <&green_led>;
-            };
-    };
+  Only one instance is supported.
 
 compatible: "i2c-tiny-usb"
 
@@ -22,10 +14,10 @@ include: base.yaml
 properties:
   i2c-bus:
     type: phandle
-    required: true
     description: |
       I2C controller to bridge, either a hardware controller or a gpio-i2c
-      node for a bit-banged bus.
+      node for a bit-banged bus. Defaults to the zephyr_i2c node label when
+      present.
 
   activity-led:
     type: phandle
@@ -33,3 +25,12 @@ properties:
       LED, as a child of an LED controller node such as gpio-leds, that is on
       while the host has configured the device and goes off briefly for each
       I2C transaction. Defaults to the led0 alias when present.
+
+examples: |
+    / {
+            i2c_tiny_usb0: i2c-tiny-usb {
+                    compatible = "i2c-tiny-usb";
+                    i2c-bus = <&i2c1>;
+                    activity-led = <&green_led>;
+            };
+    };

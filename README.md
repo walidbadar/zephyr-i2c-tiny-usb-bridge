@@ -105,7 +105,19 @@ node:
 ```
 
 The bus needs pull-ups, unless the I2C target or the board provides them.
-The build fails with an explicit error when the `i2c-tiny-usb` node is missing.
+
+The [app.overlay](app/app.overlay) defines the `i2c-tiny-usb` node with the
+`i2c_tiny_usb` label for all builds, bridging the bus with the `zephyr_i2c`
+node label by default. Board overlays can select a different bus through the
+label:
+
+```dts
+&i2c_tiny_usb {
+	i2c-bus = <&i2c1>;
+};
+```
+
+The build fails with an explicit error when neither selects a bus.
 
 If a devicetree alias for `led0` is present, it is used as activity LED: it is
 on while the host has configured the device and goes off briefly for each I2C

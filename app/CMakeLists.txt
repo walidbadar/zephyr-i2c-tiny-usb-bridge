@@ -2,6 +2,19 @@
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required(VERSION 3.20.0)
+
+# The board overlays select the bus of the i2c-tiny-usb node of app.overlay,
+# which Zephyr only uses for boards without an overlay of their own. Sysbuild
+# builds get the same overlays from sysbuild.cmake. Twister passes the board
+# with its revision and qualifiers, e.g. stm32f3_disco@B/stm32f303xc.
+if(BOARD AND NOT DTC_OVERLAY_FILE)
+  string(REGEX MATCH "^[^@/]+" board_name ${BOARD})
+  set(board_overlay ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board_name}.overlay)
+  if(EXISTS ${board_overlay})
+    set(DTC_OVERLAY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/app.overlay;${board_overlay}")
+  endif()
+endif()
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(i2c_tiny_usb_bridge)
 

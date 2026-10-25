@@ -20,14 +20,9 @@
 		zephyr,code-partition = &slot0_partition;
 	};
 
-	i2c-tiny-usb {
-		compatible = "i2c-tiny-usb";
-		i2c-bus = <&gpio_i2c>;
-	};
-
 	gpio_i2c: i2c {
 		compatible = "gpio-i2c";
-		clock-frequency = <I2C_BITRATE_STANDARD>;
+		clock-frequency = <I2C_BITRATE_FAST>;
 		scl-gpios = <&gpioa 3 GPIO_OPEN_DRAIN>;
 		sda-gpios = <&gpioa 4 GPIO_OPEN_DRAIN>;
 		#address-cells = <1>;
@@ -69,6 +64,10 @@
 /* PA3 is the USART2 RX pin, the console stays on RTT */
 &usart2 {
 	status = "disabled";
+};
+
+&i2c_tiny_usb {
+	i2c-bus = <&gpio_i2c>;
 };
 
 &usb {

@@ -83,8 +83,16 @@ struct i2c_tiny_usb_data {
 	atomic_t configured;
 };
 
+#if DT_INST_NODE_HAS_PROP(0, i2c_bus)
+#define BRIDGE_I2C_NODE DT_INST_PHANDLE(0, i2c_bus)
+#elif DT_NODE_EXISTS(DT_NODELABEL(zephyr_i2c))
+#define BRIDGE_I2C_NODE DT_NODELABEL(zephyr_i2c)
+#else
+#error "Set the i2c-bus of the i2c-tiny-usb devicetree node, the board has no zephyr_i2c node label"
+#endif
+
 static struct i2c_tiny_usb_data bridge = {
-	.i2c_dev = DEVICE_DT_GET(DT_INST_PHANDLE(0, i2c_bus)),
+	.i2c_dev = DEVICE_DT_GET(BRIDGE_I2C_NODE),
 	.status = STATUS_IDLE,
 };
 

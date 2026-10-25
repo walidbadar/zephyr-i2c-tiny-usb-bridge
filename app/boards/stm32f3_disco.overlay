@@ -9,9 +9,7 @@
  * accelerometer (0x19) and magnetometer (0x1e). The board enumerates through
  * the USB USER connector.
  */
-/ {
-	i2c-tiny-usb {
-		compatible = "i2c-tiny-usb";
-		i2c-bus = <&i2c1>;
-	};
+
+&i2c_tiny_usb {
+	i2c-bus = <&i2c1>;
 };

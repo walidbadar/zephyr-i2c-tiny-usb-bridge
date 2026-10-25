@@ -1,0 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Muhammad Waleed Badar
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * Bridges the zephyr_i2c bus by default, board and extra overlays select a
+ * different bus through the i2c_tiny_usb label
+ */
+/ {
+	i2c_tiny_usb: i2c-tiny-usb {
+		compatible = "i2c-tiny-usb";
+	};
+};
