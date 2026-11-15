@@ -3,8 +3,6 @@
 ..
 .. SPDX-License-Identifier: CC-BY-4.0
 
-:hide-toc:
-
 Board Porting Guide
 ===================
 
@@ -24,16 +22,17 @@ Board Configuration
 
 The firmware relies on an ``i2c-tiny-usb`` :external+zephyr:ref:`devicetree <devicetree>` node for
 specifying the I2C controller to use, and on the ``zephyr_udc0`` node label for the USB device
-controller. Most boards already define ``zephyr_udc0``, so a devicetree overlay with the
-``i2c-tiny-usb`` node is often all that is needed:
+controller. Most boards already define ``zephyr_udc0``.
+
+``app/app.overlay`` defines the ``i2c-tiny-usb`` node with the ``i2c_tiny_usb`` label for all builds,
+ahead of any board overlay. It bridges the bus with the ``zephyr_i2c`` node label by default, so
+boards that define this label need no configuration at all. Other boards select the bus through the
+label in a devicetree overlay:
 
 .. code-block:: devicetree
 
-   / {
-           i2c-tiny-usb {
-                   compatible = "i2c-tiny-usb";
-                   i2c-bus = <&i2c1>;
-           };
+   &i2c_tiny_usb {
+           i2c-bus = <&i2c1>;
    };
 
 Any free GPIO pair can serve as a bit-banged bus instead, with a ``gpio-i2c`` node:
@@ -43,11 +42,6 @@ Any free GPIO pair can serve as a bit-banged bus instead, with a ``gpio-i2c`` no
    #include <zephyr/dt-bindings/i2c/i2c.h>
 
    / {
-           i2c-tiny-usb {
-                   compatible = "i2c-tiny-usb";
-                   i2c-bus = <&gpio_i2c>;
-           };
-
            gpio_i2c: i2c {
                    compatible = "gpio-i2c";
                    clock-frequency = <I2C_BITRATE_STANDARD>;
@@ -59,8 +53,17 @@ Any free GPIO pair can serve as a bit-banged bus instead, with a ``gpio-i2c`` no
            };
    };
 
+   &i2c_tiny_usb {
+           i2c-bus = <&gpio_i2c>;
+   };
+
 The bus needs pull-ups, unless the I2C target or the board provides them. The build fails with an
-explicit error when the ``i2c-tiny-usb`` node is missing.
+explicit error when neither the ``i2c-bus`` property nor the ``zephyr_i2c`` node label selects a
+bus.
+
+Board configurations placed in ``app/boards/<board>.overlay`` and ``app/boards/<board>.conf`` are
+picked up automatically. The example board configurations include both a hardware I2C controller
+(``stm32f3_disco``) and a bit-banged bus (``stm32_debug_probe``).
 
 Boards with an Arduino header can use ``app/overlays/arduino_i2c.overlay``, which bridges the
 ``arduino_i2c`` bus:
@@ -80,15 +83,9 @@ selected with the ``activity-led`` property, which takes a child of an LED contr
 
 .. code-block:: devicetree
 
-   / {
-           i2c-tiny-usb {
-                   compatible = "i2c-tiny-usb";
-                   i2c-bus = <&i2c1>;
-                   activity-led = <&green_led>;
-           };
+   &i2c_tiny_usb {
+           activity-led = <&green_led>;
    };
 
 Check the description of the ``i2c-tiny-usb`` devicetree binding in
-``dts/bindings/usb/i2c-tiny-usb.yaml`` and the example board configurations under ``app/boards/``.
-Board configurations placed in ``app/boards/<board>.overlay`` and ``app/boards/<board>.conf`` are
-picked up automatically.
+``dts/bindings/usb/i2c-tiny-usb.yaml``.

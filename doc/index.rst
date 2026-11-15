@@ -3,8 +3,6 @@
 ..
 .. SPDX-License-Identifier: CC-BY-4.0
 
-:hide-toc:
-
 Introduction
 ============
 
@@ -33,8 +31,9 @@ development board into a USB to I2C adapter.
 zephyr-i2c-tiny-usb-bridge is licensed under the `Apache-2.0 license`_. The documentation is
 licensed under the `CC BY 4.0 license`_.
 
-This documentation is adapted from the `CANnectivity documentation`_ by Henrik Brix Andersen,
-licensed under the `CC BY 4.0 license`_, and has been modified for this project.
+The USB device class is derived from the Zephyr ``samples/subsys/usb/i2c_tiny_usb`` sample. This
+documentation is adapted from the `CANnectivity documentation`_ by Henrik Brix Andersen, licensed
+under the `CC BY 4.0 license`_, and has been modified for this project.
 
 Firmware Features
 -----------------

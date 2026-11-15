@@ -2,8 +2,6 @@
 ..
 .. SPDX-License-Identifier: CC-BY-4.0
 
-:hide-toc:
-
 Usage
 =====
 
@@ -71,6 +69,9 @@ USB Device Configuration
    * - ``CONFIG_APP_USBD_MAX_POWER``
      - ``50``
      - Maximum current, in 2 mA units
+   * - ``CONFIG_APP_USBD_WINUSB``
+     - ``y``
+     - Microsoft OS 2.0 descriptors
    * - ``CONFIG_APP_USBD_DFU_VID``, ``CONFIG_APP_USBD_DFU_PID``
      - Runtime IDs
      - USB IDs in DFU mode

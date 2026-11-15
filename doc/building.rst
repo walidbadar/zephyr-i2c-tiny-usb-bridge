@@ -3,14 +3,12 @@
 ..
 .. SPDX-License-Identifier: CC-BY-4.0
 
-:hide-toc:
-
 Workspace Setup
 ===============
 
 Building the firmware requires a proper Zephyr development environment. This repository can be
 used as a stand-alone Zephyr workspace, linked into an existing workspace as its manifest, or added
-to an existing workspace as a module.
+to an existing workspace as a module, see :ref:`zephyr-module`.
 
 Stand-alone Workspace
 ---------------------
@@ -41,29 +39,10 @@ manifest instead:
    cd ~/zephyrproject
    ln -s /path/to/zephyr-i2c-tiny-usb-bridge zephyr-i2c-tiny-usb-bridge
    west config manifest.path zephyr-i2c-tiny-usb-bridge
-   west update
+   west update zephyr
 
-``west update`` checks out the Zephyr revision pinned in ``west.yml`` and the modules listed there.
-
-As a Zephyr Module
-------------------
-
-The firmware repository is a :external+zephyr:ref:`Zephyr module <modules>`, which allows for adding
-it to an existing Zephyr workspace, either for building the firmware as part of an existing
-workspace, or for reuse of the i2c-tiny-usb USB device class outside of the firmware application.
-
-To pull it in as a Zephyr module, either add it as a West project in the ``west.yml`` file or pull
-it in by adding a submanifest (e.g. ``zephyr/submanifests/i2c-tiny-usb.yaml``) file with the
-following content and run ``west update``:
-
-.. code-block:: yaml
-
-   manifest:
-     projects:
-       - name: zephyr-i2c-tiny-usb-bridge
-         url: https://github.com/walidbadar/zephyr-i2c-tiny-usb-bridge.git
-         revision: main
-         path: custom/zephyr-i2c-tiny-usb-bridge # adjust the path as needed
+``west update zephyr`` checks out the Zephyr revision pinned in ``west.yml``. Run ``west update``
+without arguments to also fetch the HALs and modules listed there.
 
 Building and Running
 --------------------
@@ -80,6 +59,8 @@ Other boards need a devicetree overlay selecting the I2C bus, see :doc:`porting`
 .. code-block:: console
 
    west build -b <board> zephyr-i2c-tiny-usb-bridge/app -- -DEXTRA_DTC_OVERLAY_FILE=<board>.overlay
+
+Board-specific Kconfig options can be passed the same way with ``-DEXTRA_CONF_FILE=<board>.conf``.
 
 The default configuration is a release build without logging. To use the ``debug`` configuration,
 which has logging and a boot banner with the firmware version enabled, set ``FILE_SUFFIX=debug``:
